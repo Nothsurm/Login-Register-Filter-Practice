@@ -1,18 +1,29 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import Loader from '../components/Loader';
 
 export default function Home() {
     const [formData, setFormData] = useState('')
+    const [errorMessage, setErrorMessage] = useState(null)
+    const [loading, setLoading] = useState(false)
 
     const handleChange = (e) => {
         setFormData({
-            ...formData, [e.target.id]: e.target.value
+            ...formData, [e.target.id]: e.target.value.trim()
         })
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+
+        if (!formData.username || !formData.email || !formData.password) {
+            return setErrorMessage('Please fill in all the inputs')
+        }
+
         try {
+            setErrorMessage(null)
+            setLoading(true)
+            setTimeout(() => setLoading(false), 2000)
             const result = await fetch('/api/auth/signup', {
                 method: 'POST',
                 headers: {
@@ -21,19 +32,23 @@ export default function Home() {
                 body: JSON.stringify(formData)
             })
             const data = await result.json()
-            console.log(data)
+            if (data.success === false) {
+                return setErrorMessage(data.message)
+            }
+            setLoading(false)
         } catch (error) {
-            console.log(error)
+            setLoading(false)
+            setErrorMessage(data.message)
         }
     }
   return (
-    <div className='flex justify-center min-h-screen'>
+    <div className='flex flex-col min-h-screen'>
       <form onSubmit={handleSubmit} className='flex flex-col gap-5 m-auto'>
         <div className="flex flex-col">
-          <label htmlFor="name">name:</label>
+          <label htmlFor="username">username:</label>
           <input 
             type="text" 
-            id='name'
+            id='username'
             placeholder='Enter name'
             className='border p-2 rounded-lg bg-zinc-600 text-white'
             onChange={handleChange}
@@ -60,17 +75,25 @@ export default function Home() {
           />
         </div>
         <div className="">
-          <button 
+        <button 
             type='submit'
             className='px-4 py-2 border rounded-lg bg-blue-300 hover:bg-blue-400 transform duration-150'
+            disabled={loading}
         >
-            Signup
+            {loading ? (<Loader />) : 'Sign-Up'}
         </button>
         </div>
         <div className="">
           Already registered? <Link to='/signin' className='text-blue-500 hover:underline'>Sign in</Link>
         </div>
       </form>
+      <div className="">
+      {
+        errorMessage && (
+            <div className="mt-5 text-lg bg-red-500 p-2 rounded-lg">{errorMessage}</div>
+        )
+      }
+      </div>
     </div>
   )
 }
