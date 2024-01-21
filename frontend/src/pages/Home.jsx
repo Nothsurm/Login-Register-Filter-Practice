@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Loader from '../components/Loader';
 
 export default function Home() {
     const [formData, setFormData] = useState('')
     const [errorMessage, setErrorMessage] = useState(null)
     const [loading, setLoading] = useState(false)
+
+    const navigate = useNavigate()
 
     const handleChange = (e) => {
         setFormData({
@@ -36,6 +38,7 @@ export default function Home() {
                 return setErrorMessage(data.message)
             }
             setLoading(false)
+            navigate('/signin')
         } catch (error) {
             setLoading(false)
             setErrorMessage(data.message)
