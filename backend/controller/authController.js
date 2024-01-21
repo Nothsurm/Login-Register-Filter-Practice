@@ -1,6 +1,7 @@
 import User from "../models/userModel.js";
 import bcrypt from 'bcryptjs';
 import { errorHandler } from "../middleware/error.js";
+import { generateToken } from "../utils/createToken.js";
 
 export const signup = async (req, res, next) => {
     const { username, email, password } = req.body;
@@ -51,11 +52,14 @@ export const signin = async (req, res, next) => {
         if (!isPasswordValid) {
             next(errorHandler(400, 'Incorrect password, please try again'))
         } else {
+            generateToken(res, existingUser._id)
+
             res.status(201).json({
                 _id: existingUser._id,
                 username: existingUser.username, 
                 email: existingUser.email, 
-            })
+            });
+            return;
         }
     }
 }
