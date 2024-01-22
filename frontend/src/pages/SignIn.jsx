@@ -1,12 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { signInFailure, signInStart, signInSuccess } from "../redux/user/userSlice";
+import toast from 'react-hot-toast';
 import Loader from "../components/Loader";
 
 export default function SignIn() {
     const [formData, setFormData] = useState('')
-    const { loading, error } = useSelector((state) => state.user)
+    const { currentUser, loading, error } = useSelector((state) => state.user)
 
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -16,6 +17,13 @@ export default function SignIn() {
             ...formData, [e.target.id]: e.target.value.trim()
         })
     }
+
+    useEffect(() => {
+        if (currentUser) {
+            toast.success('Already logged in')
+            navigate('/products')
+        }
+    }, [toast, navigate, currentUser])
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -38,9 +46,11 @@ export default function SignIn() {
                 dispatch(signInFailure(data.message))
             }
             dispatch(signInSuccess(data))
+            toast.success('Successfully signed in')
             navigate('/products')
         } catch (error) {
             dispatch(signInFailure(error.message))
+            toast.error('Something went wrong, please try again')
         }
     }
 

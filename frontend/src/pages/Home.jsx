@@ -1,11 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import Loader from '../components/Loader';
+import toast from 'react-hot-toast';
 
 export default function Home() {
     const [formData, setFormData] = useState('')
     const [errorMessage, setErrorMessage] = useState(null)
     const [loading, setLoading] = useState(false)
+    const { currentUser } = useSelector((state) => state.user)
 
     const navigate = useNavigate()
 
@@ -14,6 +17,13 @@ export default function Home() {
             ...formData, [e.target.id]: e.target.value.trim()
         })
     }
+
+    useEffect(() => {
+      if (currentUser) {
+        toast.success('Already logged in')
+        navigate('/products')
+      }
+    }, [toast, navigate, currentUser])
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -38,10 +48,12 @@ export default function Home() {
                 return setErrorMessage(data.message)
             }
             setLoading(false)
+            toast.success('User successfully created')
             navigate('/signin')
         } catch (error) {
             setLoading(false)
             setErrorMessage(data.message)
+            toast.error('Something went wrong, please try again')
         }
     }
   return (
