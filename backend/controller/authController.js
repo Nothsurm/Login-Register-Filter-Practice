@@ -63,3 +63,13 @@ export const signin = async (req, res, next) => {
         }
     }
 }
+
+export const signout = async (req, res) => {
+    //remove cookie and local storage
+    res.cookie('jwt', '', {
+        httpOnly: true,
+        expires: new Date(0),
+    })
+    
+    res.status(200).json({ message: 'Logout successfull' })
+}
