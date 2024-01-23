@@ -12,7 +12,12 @@ export default function Header() {
 
   const handleSignOut = async () => {
     dispatch(signOutUserStart())
-    const res = await fetch('/api/auth/signout')
+    const res = await fetch('/api/auth/signout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
     const data = res.json()
 
     if (data.success = false) {
@@ -21,7 +26,6 @@ export default function Header() {
       return;
     }
     dispatch(signOutUserSuccess())
-    toast.success('User logged out')
   }
   
   return (
