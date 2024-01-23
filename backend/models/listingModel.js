@@ -13,7 +13,7 @@ const listingSchema = new mongoose.Schema({
         type: Number,
         required: true,
     }
-})
+}, {timestamps: true})
 
 const Listing = mongoose.model('Listing', listingSchema)
 
