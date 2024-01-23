@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import authRoute from './routes/authRoute.js'
+import listingRoute from './routes/listingRoute.js'
 
 const app = express()
 
@@ -20,6 +21,7 @@ app.listen(5000, () => {
 })
 
 app.use('/api/auth', authRoute)
+app.use('/api/listing', listingRoute)
 
 //Gives middleware function structure
 app.use((err, req, res, next) => {

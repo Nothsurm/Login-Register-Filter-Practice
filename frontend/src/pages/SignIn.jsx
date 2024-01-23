@@ -20,10 +20,9 @@ export default function SignIn() {
 
     useEffect(() => {
         if (currentUser) {
-            toast.success('Already logged in')
             navigate('/products')
         }
-    }, [toast, navigate, currentUser])
+    }, [navigate, currentUser])
 
     const handleSubmit = async (e) => {
         e.preventDefault()
