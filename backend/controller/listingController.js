@@ -11,13 +11,16 @@ export const createListing = async (req, res, next) => {
     }
 }
 
-export const getAllListings = async (req, res, next) => {
+export const getListings = async (req, res, next) => {
     try {
-        const listings = await Listing.find({})
-        if (!listings) {
-            return next(errorHandler(400, 'Listings not found'))
-        }
-        res.status(200).json(listings)
+        const name = req.query.name || ''
+        const price = req.query.price || ''
+
+        const listing = await Listing.find({
+            name: {$regex: name, $options: 'i'},
+            price
+        })
+        return res.status(200).json(listing)
     } catch (error) {
         next(error)
     }
