@@ -13,13 +13,7 @@ export const createListing = async (req, res, next) => {
 
 export const getListings = async (req, res, next) => {
     try {
-        const name = req.query.name || ''
-        const price = req.query.price || ''
-
-        const listing = await Listing.find({
-            name: {$regex: name, $options: 'i'},
-            price
-        })
+        const listing = await Listing.find({})
         return res.status(200).json(listing)
     } catch (error) {
         next(error)
